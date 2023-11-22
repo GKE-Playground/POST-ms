@@ -55,6 +55,26 @@ app.get("/", (_req: Request, res: Response) => {
   res.send("POST ms. Hello World!");
 });
 
+app.get("/getData", async (_req: Request, res: Response) => {
+  try {
+    const queryResult = await pool.query("SELECT * FROM todos");
+
+    res.json(queryResult.rows);
+  } catch (error) {
+    console.error("Error running query", error);
+    res.status(500).json({
+      error: error,
+      env: {
+        DB_USER: DB_USER,
+        DB_HOST: DB_HOST,
+        DB_NAME: DB_NAME,
+        DB_PASSWORD: DB_PASSWORD,
+        DB_PORT: DB_PORT,
+      },
+    });
+  }
+});
+
 app.post("/postData", async (req: Request, res: Response) => {
   try {
     const queryResult = await pool.query(
