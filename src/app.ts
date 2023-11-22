@@ -69,6 +69,23 @@ app.post("/postData", async (req: Request, res: Response) => {
   return null;
 });
 
+app.delete("/deleteData/:id", async (req: Request, res: Response) => {
+  try {
+    const queryResult = await pool.query(
+      "DELETE FROM todos WHERE id = $1 RETURNING *",
+      [ req.params["id"] ],
+    );
+    if (queryResult.rows.length === 0) {
+      return res.status(404).json({ error: "Todo not found." });
+    }
+
+    res.json({ message: "Todo deleted successfully." });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+  return null;
+});
+
 app.use(function (_req: Request, _res: Response, next: NextFunction) {
   //post
   next(createError(404));
