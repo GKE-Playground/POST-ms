@@ -54,33 +54,17 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.post("/postData", async (req: Request, res: Response) => {
-
-  const { todo } = req.body;
-
-  if (!todo) {
-    return res
-      .status(400)
-      .json({ error: "Todo is required in the request body." });
-  }
   try {
     const queryResult = await pool.query(
       "INSERT INTO todos (todo) VALUES ($1) RETURNING *",
-      [ todo ],
+      [ req.body.todo ],
     );
 
-    res.status(200).json(queryResult.rows[0]);
+    res.json(queryResult.rows[0]);
   } catch (error) {
-    return res.status(500).json({
-      error: error,
-      env: {
-        DB_USER: DB_USER,
-        DB_HOST: DB_HOST,
-        DB_NAME: DB_NAME,
-        DB_PASSWORD: DB_PASSWORD,
-        DB_PORT: DB_PORT,
-      },
-    });
+    return res.status(500).json({ error: error });
   }
+  return null;
 });
 
 app.use(function (_req: Request, _res: Response, next: NextFunction) {
