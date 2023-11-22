@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: IMAGE_NAME
+  namespace: todo-namespace
+spec:
+  selector:
+    matchLabels:
+      app: IMAGE_NAME
+  template:
+    metadata:
+      labels:
+        app: IMAGE_NAME
+      namespace: test-containers
+    spec:
+      serviceAccountName: todo-sa
+      containers:
+      - name: IMAGE_NAME
+        image: europe-west1-docker.pkg.dev/PROJECT_ID/gke-playground/IMAGE_NAME:GIT_TAG
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: tung-db-secret
+              key: username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tung-db-secret
+              key: password
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: tung-db-secret
+              key: database
+        - name: DB_HOST
+          value: "localhost"
+        - name: DB_PORT
+          value: "5432"
+      - name: cloud-sql-proxy
+        # This uses the latest version of the Cloud SQL Proxy
+        # It is recommended to use a specific version for production environments.
+        # See: https://github.com/GoogleCloudPlatform/cloudsql-proxy
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
+        args:
+          # If connecting from a VPC-native GKE cluster, you can use the
+          # following flag to have the proxy connect over private IP
+          # - "--private-ip"
+
+          # If you are not connecting with Automatic IAM, you can delete
+          # the following flag.
+          - "--auto-iam-authn"
+
+          # tcp should be set to the port the proxy should listen on
+          # and should match the DB_PORT value set above.
+          # Defaults: MySQL: 3306, Postgres: 5432, SQLServer: 1433
+          - "--port=5432"
+          - "cst-pbag-aiml-test:europe-west4:todo-sql-public-instance"
+        securityContext:
+          # The default Cloud SQL proxy image runs as the
+          # "nonroot" user and group (uid: 65532) by default.
+          runAsNonRoot: true

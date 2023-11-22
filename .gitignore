@@ -1,0 +1,58 @@
+# Logs
+logs/
+*.log*
+schema.ts
+.idea/
+.DS_Store
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+*.iml
+
+# Dependency directories
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+.npmrc
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# dotenv environment variable files
+.env*
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# generate output
+dist/
+lib/
+
+# Gatsby files
+.cache/
+
+# vuepress v2.x temp and cache directory
+.temp/
+.cache/
+
+# Serverless directories
+.serverless/
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+docker-compose.local.yaml
+**/local*.json
+
+.vscode/

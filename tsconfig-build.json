@@ -1,0 +1,10 @@
+{
+  "extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "dist",
+    "exactOptionalPropertyTypes": false,
+    "ignoreDeprecations": "5.0"
+  },
+  "include": ["src/**/*"]
+}
