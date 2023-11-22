@@ -25,32 +25,52 @@ const DB_NAME = process.env["DB_NAME"];
 const DB_PASSWORD = process.env["DB_PASS"];
 const DB_PORT = process.env["DB_PORT"];
 
-const pool = new Pool({
-  user: Buffer.from(String(DB_USER), "base64").toString("ascii"),
-  host: DB_HOST,
-  database: Buffer.from(String(DB_NAME), "base64").toString("ascii"),
-  password: Buffer.from(String(DB_PASSWORD), "base64").toString("ascii"),
-  port: Number(DB_PORT),
-});
+let pool: pg.Pool;
+
+if (process.env["NODE_ENV"] === "production") {
+  pool = new Pool({
+    user: Buffer.from(String(DB_USER), "base64").toString("ascii"),
+    host: DB_HOST,
+    database: Buffer.from(String(DB_NAME), "base64").toString("ascii"),
+    password: Buffer.from(String(DB_PASSWORD), "base64").toString("ascii"),
+    port: Number(DB_PORT),
+  });
+} else {
+  pool = new Pool({
+    user: DB_USER,
+    host: DB_HOST,
+    database: DB_NAME,
+    password: DB_PASSWORD,
+    port: Number(DB_PORT),
+  });
+}
 
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (_req: Request, res: Response) => {
-  res.send("GET ms. Hello World!");
+  res.send("POST ms. Hello World!");
 });
 
-app.get("/getData", async (_req: Request, res: Response) => {
-  try {
-    // Run the select query using the pool
-    const queryResult = await pool.query("SELECT * FROM todos");
+app.post("/postData", async (req: Request, res: Response) => {
 
-    // Send the query results as JSON
-    res.json(queryResult.rows);
+  const { todo } = req.body;
+
+  if (!todo) {
+    return res
+      .status(400)
+      .json({ error: "Todo is required in the request body." });
+  }
+  try {
+    const queryResult = await pool.query(
+      "INSERT INTO todos (todo) VALUES ($1) RETURNING *",
+      [ todo ],
+    );
+
+    res.status(200).json(queryResult.rows[0]);
   } catch (error) {
-    console.error("Error running query", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: error,
       env: {
         DB_USER: DB_USER,

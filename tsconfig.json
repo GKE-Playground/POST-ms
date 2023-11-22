@@ -3,7 +3,8 @@
   "compilerOptions": {
     "declaration": true,
     "exactOptionalPropertyTypes": false,
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "5.0",
+    "noImplicitReturns": false
   },
   "include": ["src/**/*", "test-integration/**/*"]
 }
