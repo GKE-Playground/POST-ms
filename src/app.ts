@@ -68,6 +68,7 @@ app.post("/postData", async (req: Request, res: Response) => {
 });
 
 app.use(function (_req: Request, _res: Response, next: NextFunction) {
+  //post
   next(createError(404));
 });
 
