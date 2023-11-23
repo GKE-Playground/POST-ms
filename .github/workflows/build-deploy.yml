@@ -29,8 +29,8 @@ jobs:
       - name: Authenticate to WIF
         uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: projects/507085571061/locations/global/workloadIdentityPools/gke-pool-tung/providers/gke-playground-provider
-          service_account: github-actions@cst-pbag-aiml-test.iam.gserviceaccount.com
+          workload_identity_provider: projects/507085571061/locations/global/workloadIdentityPools/terraform-pool-todo/providers/github-provider-todo
+          service_account: github-actions-tung@cst-pbag-aiml-test.iam.gserviceaccount.com
           token_format: access_token
           export_environment_variables: true
     
