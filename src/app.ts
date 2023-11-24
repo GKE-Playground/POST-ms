@@ -7,6 +7,8 @@ import createError from "http-errors";
 import pg from "pg";
 const { Pool } = pg;
 
+import logger from "./modules/logger.js";
+
 import type {
   Express,
   NextFunction,
@@ -58,7 +60,7 @@ app.get("/", (_req: Request, res: Response) => {
 app.get("/getData", async (_req: Request, res: Response) => {
   try {
     const queryResult = await pool.query("SELECT * FROM todos");
-
+    logger.info("Successful Query result", queryResult.rows);
     res.json(queryResult.rows);
   } catch (error) {
     console.error("Error running query", error);
